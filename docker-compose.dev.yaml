@@ -25,16 +25,18 @@ services:
       - "3000:3000"
   backend:
     container_name: backend
-    image: backend
+    # image: backend
     build:
       context: ./backend
       dockerfile: backend.dockerfile
     ports:
       - "4000:4000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=public
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=mydb
     depends_on:
       - db
+    volumes:
+      - ./backend/:/app/.
   db:
     container_name: db
     image: postgres:12

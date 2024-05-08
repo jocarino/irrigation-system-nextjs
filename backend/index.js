@@ -1,12 +1,14 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 
+const morgan = require('morgan');
 const prisma = new PrismaClient();
 const app = express();
 
 //use json
 app.use(express.json());
 
+app.use(morgan('dev'))
 //cors
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -18,7 +20,7 @@ app.use((req, res, next) => {
 //test api with error handling
 app.get("/test", (req, res, next) => {
   try {
-    res.status(200).json({ message: "Success!" });
+    res.status(200).json({ message: "hi6" });
   } catch (err) {
     next(err);
   }

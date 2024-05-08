@@ -10,8 +10,10 @@ COPY prisma ./prisma
 
 RUN npx prisma generate
 
+RUN chown -R node:node node_modules/.prisma
+
 COPY . .
 
 EXPOSE 4000
 
-CMD ["node", "index.js"]
+CMD ["npm", "run", "start.dev"]

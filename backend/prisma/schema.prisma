@@ -19,3 +19,18 @@ model User {
   name  String
   email String
 }
+
+//Plant info
+model Plant {
+  id               Int    @id @default(autoincrement())
+  userId           Int
+  name             String
+}
+
+//Plant humidity
+model PlantHumidity {
+  id               Int    @id @default(autoincrement())
+  plantId         Int
+  humidityLevel    Int
+  dateTime        DateTime
+}
