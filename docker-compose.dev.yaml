@@ -11,7 +11,7 @@ services:
     restart: always
     command: yarn dev
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - NEXT_PUBLIC_API_URL=http://backend:4000
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true
@@ -32,11 +32,11 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres?schema=mydb
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb?schema=public
     depends_on:
       - db
     volumes:
-      - ./backend/:/app/.
+      - ./backend/:/app
   db:
     container_name: db
     image: postgres:12
@@ -44,7 +44,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgresD
-      POSTGRES_DB: postgres
+      POSTGRES_DB: mydb
     ports:
       - 5432:5432
     volumes:
