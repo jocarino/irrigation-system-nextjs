@@ -5,14 +5,12 @@ services:
     container_name: frontend
     build:
       context: ./frontend
-      target: dev
+      target: prod
       dockerfile: frontend.dockerfile
     restart: always
-    command: yarn dev
     environment:
       - NEXT_PUBLIC_API_URL=http://backend:4000
-      - NODE_ENV=development
-      - WATCHPACK_POLLING=true
+      - NODE_ENV=production
       - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./frontend:/app
