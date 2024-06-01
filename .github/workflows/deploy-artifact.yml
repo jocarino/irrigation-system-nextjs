@@ -55,7 +55,6 @@ jobs:
 
       - name: Deploy to server or Storage Box
         run: |
-          # rsync -azP -e "ssh -i $HOME/.ssh/id_ed25519 -p 22" ./your-artifact.ext ${{ secrets.ARTIFACT_USERNAME }}@${{ secrets.ARTIFACT_HOST }}:~/path/to/destination/your-artifact.ext
           ssh ${{ secrets.ARTIFACT_USERNAME  }}@${{ secrets.ARTIFACT_HOST }} << EOF
           docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
           docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
