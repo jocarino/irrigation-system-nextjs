@@ -4,7 +4,10 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+# Instal dependencies according to the lockfile
+RUN if [ ! -d "node_modules" ]; then \
+            npm install --loglevel verbose; \
+    fi
 
 COPY prisma ./prisma
 

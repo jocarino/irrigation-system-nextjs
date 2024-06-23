@@ -1,15 +1,21 @@
 const express = require("express");
-const { PrismaClient } = require("@prisma/client");
-
 const morgan = require("morgan");
-const { ppid } = require("process");
-const prisma = new PrismaClient();
 const app = express();
 const users = require("./routes/users");
 const plants = require("./routes/plants");
+const auth = require("./routes/auth");
+const session = require("express-session");
+var passport = require("passport");
 
 //use json
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Session
+app.use(session({ secret: process.env.SESSION_SECRET_KEY }));
+// Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(morgan("dev"));
 //cors
@@ -32,7 +38,16 @@ app.get("/test", (req, res, next) => {
 // Routes
 app.use("/users", users);
 app.use("/plants", plants);
+app.use("/", auth);
 
 //Start server
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () =>
+  console.log(`Server running on port http://127.0.0.1:${PORT}`)
+);
+
+// Custom error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Something went wrong!" });
+});

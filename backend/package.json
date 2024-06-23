@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma:seed": "npx prisma db seed",
     "prisma:reset": "npx prisma migrate reset",
-    "start.dev": "nodemon --watch \"./**\" --ext \"js\" --exec \"node index.js\""
+    "start.dev": "nodemon --watch \"./**\" --ext \"js\" --exec \"node --inspect-brk=0.0.0.0:9229 index.js\""
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
@@ -16,15 +16,19 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.13.0",
+    "@prisma/client": "^5.15.1",
+    "connect-ensure-login": "^0.1.1",
     "express": "^4.19.2",
-    "morgan": "^1.10.0"
+    "express-session": "^1.18.0",
+    "morgan": "^1.10.0",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^20.12.9",
-    "nodemon": "^3.1.0",
-    "prisma": "^5.13.0",
+    "@types/node": "^20.14.7",
+    "nodemon": "^3.1.4",
+    "prisma": "^5.15.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   }
 }

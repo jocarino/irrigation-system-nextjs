@@ -43,6 +43,23 @@ router.get("/humidity/:id", async (req, res, next) => {
   }
 });
 
+// post plant humidity
+router.post("/humidity/:id", async (req, res, next) => {
+  try {
+    console.log(req.params);
+    const response = await prisma.plantHumidity.create({
+      data: {
+        plantId: Number(req.params.id),
+        humidityLevel: Number(req.body.humidity) || 0,
+        dateTime: new Date().toISOString(),
+      },
+    });
+    res.status(200).json(response);
+  } catch (err) {
+    next(err);
+  }
+});
+
 //create plant
 router.post("/", async (req, res, next) => {
   try {

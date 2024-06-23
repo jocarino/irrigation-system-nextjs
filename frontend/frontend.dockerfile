@@ -18,22 +18,13 @@ COPY package.json ./
 # Copy available lock file
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
-# Instal dependencies according to the lockfile
-RUN if [ -f "pnpm-lock.yaml" ]; then \
-        npm install -g pnpm && \
-        pnpm install; \
-    elif [ -f "yarn.lock" ]; then \
-        npm install -g yarn && \
-        yarn install; \
-    elif [ -f "package-lock.json" ]; then \
-        npm install; \
-    else \
-        npm install; \
-        # If you want to throw error on lockfile not being available, 
-        # uncomment the following lines
-        # echo "No Lockfile!"; \
-        # exit 1; \
-    fi
+# Install dependencies based on the preferred package manager
+RUN \
+  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci; \
+  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  else echo "Lockfile not found." && exit 1; \
+  fi
 
 # Disable the telementary
 ENV NEXT_TELEMETRY_DISABLED 1
