@@ -19,4 +19,10 @@ COPY . .
 
 EXPOSE 4000
 
+FROM inter AS prod
+
+CMD ["npm", "start"]
+
+FROM inter AS dev
+
 CMD ["npm", "run", "start.dev"]

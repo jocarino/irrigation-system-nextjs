@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma:seed": "npx prisma db seed",
     "prisma:reset": "npx prisma migrate reset",
-    "start.dev": "nodemon --watch \"./**\" --ext \"js\" --exec \"node --inspect-brk=0.0.0.0:9229 index.js\""
+    "start": "node index.js",
+    "start.dev": "nodemon --watch \"./**\" --ext \"js\" --exec \"node --inspect=0.0.0.0:9229 index.js\""
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
