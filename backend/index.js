@@ -1,10 +1,12 @@
 const express = require("express");
 const morgan = require("morgan");
 const app = express();
+const cors = require("cors");
 const users = require("./routes/users");
 const plants = require("./routes/plants");
 const auth = require("./routes/auth");
 const session = require("express-session");
+const SQLiteStore = require("connect-sqlite3")(session);
 var passport = require("passport");
 
 //use json
@@ -12,19 +14,27 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session
-app.use(session({ secret: process.env.SESSION_SECRET_KEY }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET_KEY,
+    resave: false,
+    saveUninitialized: false,
+    store: new SQLiteStore({ db: "sessions.db", dir: "./var/db" }),
+  })
+);
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(morgan("dev"));
 //cors
-app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  next();
-});
+const corsOptions = {
+  origin: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 //test api with error handling
 app.get("/test", (req, res, next) => {
@@ -36,9 +46,9 @@ app.get("/test", (req, res, next) => {
 });
 
 // Routes
-app.use("/users", users);
-app.use("/plants", plants);
-app.use("/", auth);
+app.use("/api/users", users);
+app.use("/api/plants", plants);
+app.use("/api", auth);
 
 //Start server
 const PORT = process.env.PORT || 4000;

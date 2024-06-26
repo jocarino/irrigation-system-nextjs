@@ -2,11 +2,15 @@ const express = require("express");
 const router = express.Router();
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
+const ensureLogIn = require("connect-ensure-login").ensureLoggedIn;
+const ensureLoggedIn = ensureLogIn();
 
 //get all plants
-router.get("/", async (req, res, next) => {
+router.get("/", ensureLoggedIn, async (req, res, next) => {
   try {
-    const plants = await prisma.plant.findMany();
+    const plants = await prisma.plant.findMany({
+      where: { userId: req.user.id },
+    });
     res.status(200).json(plants);
   } catch (err) {
     next(err);
@@ -14,7 +18,7 @@ router.get("/", async (req, res, next) => {
 });
 
 //get plant by id
-router.get("/:id", async (req, res, next) => {
+router.get("/:id", ensureLoggedIn, async (req, res, next) => {
   try {
     const plant = await prisma.plant.findUnique({
       where: { id: Number(req.params.id) },
@@ -26,7 +30,7 @@ router.get("/:id", async (req, res, next) => {
 });
 
 //get plant humidity
-router.get("/humidity/:id", async (req, res, next) => {
+router.get("/humidity/:id", ensureLoggedIn, async (req, res, next) => {
   try {
     const plant = await prisma.plantHumidity.findMany({
       take: 7,
@@ -44,7 +48,7 @@ router.get("/humidity/:id", async (req, res, next) => {
 });
 
 // post plant humidity
-router.post("/humidity/:id", async (req, res, next) => {
+router.post("/humidity/:id", ensureLoggedIn, async (req, res, next) => {
   try {
     console.log(req.params);
     const response = await prisma.plantHumidity.create({
@@ -61,7 +65,7 @@ router.post("/humidity/:id", async (req, res, next) => {
 });
 
 //create plant
-router.post("/", async (req, res, next) => {
+router.post("/", ensureLoggedIn, async (req, res, next) => {
   try {
     const plant = await prisma.plant.create({
       data: { ...req.body },
@@ -73,7 +77,7 @@ router.post("/", async (req, res, next) => {
 });
 
 //update plant
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", ensureLoggedIn, async (req, res, next) => {
   try {
     const plant = await prisma.plant.update({
       where: { id: Number(req.params.id) },
@@ -86,7 +90,7 @@ router.put("/:id", async (req, res, next) => {
 });
 
 //delete plant
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", ensureLoggedIn, async (req, res, next) => {
   try {
     const plant = await prisma.plant.delete({
       where: { id: Number(req.params.id) },

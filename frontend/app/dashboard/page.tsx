@@ -5,22 +5,36 @@ import { Suspense } from "react"
 type PlantData = { id: number, name: string, userId: number }
 type PlantHumidityData = { humidityLevel: number, dateTime: string }
 const getPlantHumidity = async (id: number) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/plants/humidity/${id}`)
+    const response = await fetch(`${process.env.NEXT_API_URL}/api/plants/humidity/${id}`)
     const humidityPlantData = await response.json()
     return humidityPlantData
 
 }
 async function Dashboard() {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/plants`)
+    try {
+        const response = await fetch(`${process.env.NEXT_API_URL}/api/plants`, {
+            method: 'GET',
+            credentials: 'include', // This is crucial for including the session cookie
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
 
-    const plantsData: PlantData[] = await response.json();
+        console.info("plants", response)
 
-    return plantsData.length > 0 ?
-        (
-            <div className="flex flex-row gap-2" >
-                {plantsData.map(plantData => <PlantCard plantData={plantData}  ></PlantCard>)}
-            </div>
-        ) : <p>no plants to show</p>
+
+        const plantsData: PlantData[] = await response.json();
+
+        return plantsData.length > 0 ?
+            (
+                <div className="flex flex-row gap-2" >
+                    {plantsData.map(plantData => <PlantCard plantData={plantData}  ></PlantCard>)}
+                </div>
+            ) : <p>no plants to show</p>
+    } catch (error) {
+        console.log(error)
+        return <p>error</p>
+    }
 }
 type PlantHumidityChartWrapperProps = { plantId: number }
 async function PlantHumidityChartWrapper({ plantId }: PlantHumidityChartWrapperProps) {

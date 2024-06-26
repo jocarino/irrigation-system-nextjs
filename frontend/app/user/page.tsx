@@ -3,7 +3,7 @@ import { Suspense } from "react";
 async function Users() {
   try {
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`)
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`)
     const users = await response.json();
     return (<p>{JSON.stringify(users)}</p>)
   } catch (error) {

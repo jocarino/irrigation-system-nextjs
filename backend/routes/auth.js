@@ -137,21 +137,29 @@ router.post("/login/password", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      const { hashedPassword, salt, ...userObject } = user;
-      return res
-        .status(200)
-        .json({ message: "Login successful", user: userObject });
+      res.header("Access-Control-Allow-Credentials", "true");
+      return res.status(200).json({
+        message: "Login successful",
+        session: req.session,
+      });
     });
   })(req, res, next);
 });
 
-//test api with error handling
-router.get("/login", (req, res, next) => {
-  try {
-    res.status(200).json({ message: req.body });
-  } catch (err) {
-    next(err);
-  }
+/* POST /logout
+ *
+ * This route logs the user out.
+ */
+router.post("/logout", function (req, res, next) {
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.header("Access-Control-Allow-Credentials", "true");
+    return res.status(200).json({
+      message: "Logout successful",
+    });
+  });
 });
 
 /* POST /signup
@@ -190,6 +198,22 @@ router.post("/signup", function (req, res, next) {
       }
     }
   );
+});
+
+/* GET /check-auth
+ *
+ * This route checks if the user is authenticated.
+ *
+ * If the user is authenticated, the user's ID and username are returned.
+ * Otherwise, an error is returned.
+ */
+router.get("/check-auth", function (req, res, next) {
+  console.log("Session during check:", req.session);
+  if (req.session.passport.user) {
+    res.status(200).json({ authenticated: true });
+  } else {
+    res.status(401).json({ authenticated: false });
+  }
 });
 
 module.exports = router;

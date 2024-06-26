@@ -10,7 +10,8 @@ services:
     restart: always
     command: yarn dev
     environment:
-      - NEXT_PUBLIC_API_URL=http://backend:4000
+      - NEXT_PUBLIC_API_URL=http://127.0.0.1:4000
+      - NEXT_API_URL=http://backend:4000
       - NODE_ENV=development
       - WATCHPACK_POLLING=true
       - CHOKIDAR_USEPOLLING=true
@@ -33,6 +34,7 @@ services:
       - "4000:4000"
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/mydb?schema=public
+      - SESSION_SECRET_KEY=ZR8zsP&K327#weZvsGBGN@!KtN1YJrrL
     depends_on:
       - db
     volumes:
